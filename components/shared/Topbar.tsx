@@ -1,10 +1,18 @@
+"use client";
+
 import React from 'react'
 import Link from 'next/link';
 import Image from 'next/image';
-import { SignedIn, SignOutButton, OrganizationSwitcher } from '@clerk/nextjs';
+import { SignedIn, SignOutButton, OrganizationSwitcher, useAuth } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
+import { useRouter } from 'next/navigation';
+import { Button } from '../ui/button';
 
 const Topbar = () => {
+
+  const router = useRouter();
+  const { userId } = useAuth();
+
   return (
     <nav className='topbar'>
       <Link href="/" className='flex items-center gap-4'>
@@ -36,6 +44,16 @@ const Topbar = () => {
               </div>
             </SignOutButton>
           </SignedIn>
+          {!userId && (
+            <div 
+              className='w-full flex justify-center items-center'
+              onClick={() => router.push("/sign-in")}>
+              <Button className='bg-primary-500 rounded-md'>
+                Sign In
+              </Button>
+            </div>
+           )}
+
         </div>
 
 
@@ -46,6 +64,7 @@ const Topbar = () => {
             }
           }} 
         />
+
       </div>
 
 

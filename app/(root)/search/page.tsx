@@ -4,6 +4,7 @@ import { currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { UserCard } from '@/components/card';
 import { Input } from '@/components/ui/input';
+import Image from 'next/image';
 
 const Page = async () => {
   
@@ -27,12 +28,20 @@ const Page = async () => {
         <h2 className='head-text mb-10'>Search</h2>
 
         <div className='searchbar'>
+            <Image
+              src="/assets/search-gray.svg"
+              alt="search"
+              width={24}
+              height={24}
+              className="rounded-full object-contain"
+            />
             <Input
                 type="text"
-                className='searchbar_input'
+                className='searchbar_input no-focus'
+                placeholder='Search users'
             />
-
         </div>
+
 
         <div className='mt-14 flex flex-col gap-9'>
             {result.users.length === 0? (

@@ -96,7 +96,7 @@ const AccountForm = ({ user, btnTitle }: AccountFormProps) => {
             name: values.name,
             image: values.profile_photo,
             bio: values.bio,
-            pathname: pathname
+            path: pathname
         });
 
         if (pathname === "/profile/edit") {

@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface ProfileHeaderProps {
     accountId: string,
@@ -6,13 +7,15 @@ interface ProfileHeaderProps {
     name: string,
     username: string,
     imgUrl: string,
-    bio: string
+    bio: string,
+    type?: string
 }
 
-const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio } : ProfileHeaderProps) => {
+const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, type } : ProfileHeaderProps) => {
+
   return (
     <div className='w-full flex flex-col justify-start'>
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-between items-start'>
             <div className='flex items-center gap-3'>
                 <div className='relative w-20 h-20'>
                     <Image
@@ -32,6 +35,21 @@ const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio } : 
                     </p>
                 </div>
             </div>
+
+            {accountId===authUserId && type!=="community" && (
+                <Link href="/profile/edit">
+                    <div className='flex cursor-pointer gap-3 rounded-lg bg-dark-3 px-4 py-2'>
+                        <Image
+                            src='/assets/edit.svg'
+                            alt='logout'
+                            width={16}
+                            height={16}
+                        />
+
+                        <p className='text-light-2 max-sm:hidden'>Edit</p>
+                    </div>
+                </Link>
+            )}
         </div>
 
         <p className='mt-6 max-w-lg text-base-regular text-light-2'>

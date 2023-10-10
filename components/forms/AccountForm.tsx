@@ -212,7 +212,7 @@ const AccountForm = ({ user, btnTitle }: AccountFormProps) => {
                     )}
                 />
                 <Button type="submit" className="bg-primary-500">
-                    Submit
+                    {btnTitle}
                 </Button>
             </form>
         </Form>

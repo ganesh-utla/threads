@@ -1,9 +1,7 @@
 
-import { fetchUser, fetchUsers, getActivity } from '@/lib/actions/user.actions';
+import { fetchUser, getActivity } from '@/lib/actions/user.actions';
 import { currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { UserCard } from '@/components/card';
-import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import Image from 'next/image';
 

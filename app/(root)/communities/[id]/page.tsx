@@ -2,7 +2,7 @@ import { ProfileHeader, ThreadsTab } from '@/components/shared';
 import { currentUser } from '@clerk/nextjs';
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { communityTabs, profileTabs } from '@/constants';
+import { communityTabs } from '@/constants';
 import Image from 'next/image';
 import { fetchCommunityDetails } from '@/lib/actions/community.actions';
 import { UserCard } from '@/components/card';
@@ -26,6 +26,7 @@ const Page = async ({ params } : { params: {id: string} }) => {
             username={communityInfo.username}
             imgUrl={communityInfo.image}
             bio={communityInfo.bio}
+            type="community"
         />
 
         <div className='mt-9'>

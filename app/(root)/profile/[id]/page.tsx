@@ -1,5 +1,5 @@
 import { ProfileHeader, ThreadsTab } from '@/components/shared';
-import { fetchUser } from '@/lib/actions/user.actions';
+import { fetchUser, fetchUserThreads } from '@/lib/actions/user.actions';
 import { currentUser } from '@clerk/nextjs';
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,12 +15,16 @@ const Page = async ({ params } : { params: {id: string} }) => {
   
   const userInfo = await fetchUser(params.id);
 
-  if (!userInfo) return null;
+  if (!userInfo?.onboarded) return redirect("/onboarding");
+
+  const userThreads = await fetchUserThreads(params.id);
+
+  const userThreadsLength = userThreads.threads.length;
 
   return (
     <section>
         <ProfileHeader
-            accountId={userInfo._id}
+            accountId={userInfo.id}
             authUserId={user.id}
             name={userInfo.name}
             username={userInfo.username}
@@ -49,22 +53,38 @@ const Page = async ({ params } : { params: {id: string} }) => {
 
                             {item.label==="Threads" && (
                                 <p className="ml-1 rounded-sm bg-light-4 px-2 py-1 text-light-2 !text-tiny-medium">
-                                    {userInfo?.threads?.length}
+                                    {userThreadsLength}
                                 </p>
                             )}
 
                         </TabsTrigger>
                     ))}
                 </TabsList>
-                {profileTabs.map((tab) => (
-                    <TabsContent key={`content-${tab.label}`} value={tab.value} className='w-full text-light-1'>
-                        <ThreadsTab 
-                            currentUserId={user.id}
-                            accountId={userInfo.id}
-                            accountType="User"
-                        />
-                    </TabsContent>
-                ))}
+
+                <TabsContent value={profileTabs[0].value} className='w-full text-light-1'>
+                    <ThreadsTab 
+                        currentUserId={user.id}
+                        accountId={userInfo.id}
+                        accountType="User"
+                    />
+                </TabsContent>
+
+                <TabsContent value={profileTabs[1].value} className='w-full text-light-1'>
+                    <ThreadsTab 
+                        currentUserId={user.id}
+                        accountId={userInfo.id}
+                        accountType="User"
+                    />
+                </TabsContent>
+
+                <TabsContent value={profileTabs[2].value} className='w-full text-light-1'>
+                    <ThreadsTab 
+                        currentUserId={user.id}
+                        accountId={userInfo.id}
+                        accountType="User"
+                    />
+                </TabsContent>
+
             </Tabs>
         </div>
     </section>

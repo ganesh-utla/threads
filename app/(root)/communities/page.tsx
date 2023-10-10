@@ -2,12 +2,15 @@
 import { fetchUser } from '@/lib/actions/user.actions';
 import { currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { Input } from '@/components/ui/input';
 import { fetchCommunities } from '@/lib/actions/community.actions';
-import CommunityCard from '@/components/card/CommunityCard';
-import Image from 'next/image';
+import { CommunityCard } from '@/components/card';
+import { Searchbar, Pagination } from '@/components/shared';
 
-const Page = async () => {
+const Page = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
   
   const user = await currentUser();
 
@@ -18,29 +21,16 @@ const Page = async () => {
   if(!userInfo.onboarded) redirect("/onboarding");
 
   const result = await fetchCommunities({
-    searchString: '',
-    pageNumber: 1,
-    pageSize: 20
+    searchString: searchParams.q,
+    pageNumber: searchParams?.page ? +searchParams.page : 1,
+    pageSize: 25,
   });
 
   return (
     <section>
         <h2 className='head-text mb-10'>Communities</h2>
 
-        <div className='searchbar'>
-            <Image
-              src="/assets/search-gray.svg"
-              alt="search"
-              width={24}
-              height={24}
-              className="rounded-full object-contain"
-            />
-            <Input
-                type="text"
-                className='searchbar_input no-focus'
-                placeholder='Search communities'
-            />
-        </div>
+        <Searchbar routeType='communities' />
 
         <div className='mt-14 flex flex-col gap-9'>
             {result.communities.length === 0? (
@@ -61,6 +51,12 @@ const Page = async () => {
                 </>
             )}
         </div>
+
+        <Pagination
+          path='communities'
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
 
     </section>
   )

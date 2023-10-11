@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery, SortOrder } from "mongoose";
+import mongoose, { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
 
 import Community from "../models/community.model";
@@ -94,7 +94,7 @@ export async function fetchUserThreads(userId: string) {
   }
 }
 
-// Almost similar to Thead (search + pagination) and Community (search + pagination)
+// Almost similar to Thread (search + pagination) and Community (search + pagination)
 export async function fetchUsers({
   userId,
   searchString = "",
@@ -178,6 +178,67 @@ export async function getActivity(userId: string) {
     return replies;
   } catch (error) {
     console.error("Error fetching replies: ", error);
+    throw error;
+  }
+}
+
+export async function isUserLikedThread(userId: string, threadId: string) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ id: userId });
+
+    const likedThreads = user.likedThreads ?? [];
+
+    return likedThreads.filter((lt: any) => lt.toString()===threadId).length > 0;
+    
+  } catch (error) {
+    console.error("Error fetching user threads:", error);
+    throw error;
+  }
+}
+
+export async function addToLikedThreads(userId: string, threadId: string) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ id: userId });
+    const newLikedThread = await Thread.findOne({ id: threadId });
+
+    const likedThreads = user.likedThreads ?? [];
+
+    likedThreads.push(newLikedThread._id);
+
+    user.likedThreads = [...likedThreads];
+
+    await user.save();
+    
+  } catch (error) {
+    console.error("Error fetching user threads:", error);
+    throw error;
+  }
+}
+
+export async function deleteFromLikedThreads(userId: string, threadId: string) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ id: userId });
+    // console.log(userId, threadId, user.likedThreads);
+    const likedThreads = user.likedThreads ?? [];
+    
+    likedThreads.filter((lt: any) => {
+      // console.log(lt.toString(), threadId);
+      return lt.toString()!==threadId;
+    });
+    // console.log(likedThreads);
+    user.likedThreads = [...likedThreads];
+    // console.log(likedThreads[0].toString(), likedThreads[0].toString()===threadId);
+    // console.log("done");
+    await user.save();
+    
+  } catch (error) {
+    console.error("Error fetching user threads:", error);
     throw error;
   }
 }

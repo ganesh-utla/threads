@@ -21,7 +21,7 @@ import { useOrganization } from "@clerk/nextjs";
 
 
 
-const PostThread = ({ userId } : { userId: string }) => {
+const PostThread = ({ userId, postContent, setShowModal } : { userId: string, postContent?: string, setShowModal?: Function }) => {
 
     const router = useRouter();
     const pathname = usePathname();
@@ -30,7 +30,7 @@ const PostThread = ({ userId } : { userId: string }) => {
     const form = useForm({
         resolver: zodResolver(ThreadValidation),
         defaultValues: {
-            thread: "",
+            thread: postContent ?? "",
             accountId: userId
         }
     });
@@ -42,7 +42,8 @@ const PostThread = ({ userId } : { userId: string }) => {
             communityId: organization? organization.id : null,
             path: pathname
         });
-
+        if (setShowModal)
+            setShowModal(false);
         router.push("/");
     }
 

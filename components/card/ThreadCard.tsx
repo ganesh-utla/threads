@@ -2,7 +2,11 @@ import { formatDateString } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
-import DeleteThread from '../forms/DeleteThread';
+import { DeleteThread, LikeThread } from '../forms';
+import RepostThread from '../forms/RepostThread';
+import { fetchUser } from '@/lib/actions/user.actions';
+import { redirect } from 'next/navigation';
+import ShareThread from '../forms/ShareThread';
 
 interface ThreadCardProps {
     id: string;
@@ -28,7 +32,7 @@ interface ThreadCardProps {
     isComment?: boolean;
 }
 
-const ThreadCard = ({
+const ThreadCard = async ({
     id,
     currentUserId,
     author,
@@ -39,6 +43,10 @@ const ThreadCard = ({
     parentId,
     isComment
 } : ThreadCardProps ) => {
+
+    const userInfo = await fetchUser(currentUserId);
+
+    if(!userInfo?.onboarded) redirect("/onboarding");
 
   return (
     <article className={`w-full flex flex-col rounded-xl ${isComment? "px-0 xs:px-7" : "bg-dark-2 p-7"}`}>
@@ -69,16 +77,21 @@ const ThreadCard = ({
 
                     <div className={`mt-5 flex flex-col gap-3 ${isComment && "mb-10"}`}>
                         <div className='flex gap-3.5'>
-                            <Image src="/assets/heart-gray.svg" alt="heart" width={24} height={24} 
-                                    className='cursor-pointer object-contain'/>
+                            <LikeThread 
+                                threadId={JSON.stringify(id)}
+                                currentUserId={currentUserId}
+                                parentId={parentId}
+                                isComment={isComment}
+                            />
                             <Link href={`/thread/${id}`}>
                                 <Image src="/assets/reply.svg" alt="reply" width={24} height={24} 
                                     className='cursor-pointer object-contain'/>
                             </Link>
-                            <Image src="/assets/repost.svg" alt="repost" width={24} height={24} 
-                                className='cursor-pointer object-contain'/>
-                            <Image src="/assets/share.svg" alt="share" width={24} height={24} 
-                                className='cursor-pointer object-contain'/>
+
+                            <RepostThread userId={`${userInfo._id}`} postContent={content} />
+                            
+                            <ShareThread threadId={`${id}`} postContent={content} />
+                            
                         </div>
 
                         {isComment && comments.length > 0 && (
@@ -105,12 +118,12 @@ const ThreadCard = ({
             <div className='ml-1 mt-3 flex items-center gap-2'>
             {comments.slice(0, 2).map((comment, index) => (
                 <Image
-                key={index}
-                src={comment.author.image}
-                alt={`user_${index}`}
-                width={24}
-                height={24}
-                className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
+                    key={index}
+                    src={comment.author.image}
+                    alt={`user_${index}`}
+                    width={24}
+                    height={24}
+                    className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
                 />
             ))}
 

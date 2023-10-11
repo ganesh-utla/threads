@@ -18,7 +18,13 @@ const UserSchema = new mongoose.Schema({
             ref: "Community"
         }
     ],
-    onboarded: {type: Boolean, default: false}
+    onboarded: {type: Boolean, default: false},
+    likedThreads: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Thread"
+        }
+    ]
 });
 
 const User = mongoose.models.User || mongoose.model('User', UserSchema);

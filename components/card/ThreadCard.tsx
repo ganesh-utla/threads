@@ -2,11 +2,9 @@ import { formatDateString } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
-import { DeleteThread, LikeThread } from '../forms';
-import RepostThread from '../forms/RepostThread';
+import { DeleteThread, LikeThread, ShareThread, RepostThread } from '../forms';
 import { fetchUser } from '@/lib/actions/user.actions';
 import { redirect } from 'next/navigation';
-import ShareThread from '../forms/ShareThread';
 
 interface ThreadCardProps {
     id: string;

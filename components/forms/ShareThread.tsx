@@ -16,7 +16,7 @@ const ShareThread = ({
     const [contentCopied, setContentCopied] = useState(false);
     const [linkCopied, setLinkCopied] = useState(false);
 
-    const url = `https://gthreads.vercel.app/threads/${threadId}`;
+    const url = `https://gthreads.vercel.app/thread/${threadId}`;
     const message = `Hey%2C%20Check%20out%20this%20thread%3A%0A${url}`;
 
   return (
